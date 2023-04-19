@@ -7,19 +7,21 @@ const {
   updateInfoContactById,
   updateStatusContact
 } = require('../../controllers/contact/contacts');
+const { userAuthMiddleware } = require('../../middlewares/user-auth.middlewares');
+const { controllerWrapper } = require('../../services/controller-wrapper.service')
 
 const router = express.Router()
 
-router.get('/', getAllContacts)
+router.get('/', userAuthMiddleware, controllerWrapper(getAllContacts))
 
-router.get('/:contactId', getContactInfoById)
+router.get('/:contactId', userAuthMiddleware, controllerWrapper(getContactInfoById))
 
-router.post('/', addNewContact)
+router.post('/', userAuthMiddleware, controllerWrapper(addNewContact))
 
-router.delete('/:contactId', removeContactById)
+router.delete('/:contactId', userAuthMiddleware, controllerWrapper(removeContactById))
 
-router.put('/:contactId', updateInfoContactById)
+router.put('/:contactId', userAuthMiddleware, controllerWrapper(updateInfoContactById))
 
-router.patch('/:contactId/favorite', updateStatusContact)
+router.patch('/:contactId/favorite', userAuthMiddleware, controllerWrapper(updateStatusContact))
 
 module.exports = router
