@@ -5,6 +5,8 @@ const { getCurrent } = require("../../controllers/auth/current");
 const { logout } = require("../../controllers/auth/logout");
 const { controllerWrapper } = require("../../services/controller-wrapper.service");
 const { userAuthMiddleware } = require("../../middlewares/user-auth.middlewares");
+const { updateAvatar } = require("../../controllers/auth/updateavatar");
+const { upload } = require("../../middlewares/upload");
 
 const router = express.Router();
 
@@ -22,6 +24,13 @@ router.post(
     "/logout",
     userAuthMiddleware,
     controllerWrapper(logout)
+);
+
+router.patch(
+    "/avatars",
+    userAuthMiddleware,
+    upload.single("avatar"),
+    controllerWrapper(updateAvatar)
 );
 
 

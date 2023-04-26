@@ -1,6 +1,8 @@
 const { ContactModel } = require('../../database/model/contact.model');
 const { contactSchema, favoriteJoiSchema } = require('../../schemas/contacts');
 
+
+
 const getAllContacts = async (req, res, next) => {
     const user = req.user;
     const contacts = await ContactModel.find({ owner: user });
@@ -118,11 +120,13 @@ const updateStatusContact = async (req, res, next) => {
 };
 
 
+
 module.exports = {
     getAllContacts,
     getContactInfoById,
     addNewContact,
     removeContactById,
     updateInfoContactById,
-    updateStatusContact
+    updateStatusContact,
+
 };

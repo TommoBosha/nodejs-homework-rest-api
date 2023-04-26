@@ -4,6 +4,7 @@ const { createHash } = require("../../services/hashing.service");
 const { createHttpException } = require("../../services/create-http-exception.service");
 const { createJWT } = require("../../services/jwt.service");
 const { userSchema } = require("../../schemas/user");
+const gravatar = require("gravatar");
 
 const signUp = async (req, res, next) => {
     const { email, password } = req.body;
@@ -14,10 +15,12 @@ const signUp = async (req, res, next) => {
     }
 
     const passwordHash = await createHash(password);
+    const avatarURL = gravatar.url(email);
 
     const newUser = await UserModel.create({
         email,
         passwordHash,
+        avatarURL,
     }).catch((e) => {
         throw createHttpException(409, "Thi email is already taken");
     });
