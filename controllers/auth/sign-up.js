@@ -5,6 +5,8 @@ const { createHttpException } = require("../../services/create-http-exception.se
 const { createJWT } = require("../../services/jwt.service");
 const { userSchema } = require("../../schemas/user");
 const gravatar = require("gravatar");
+const { v4: uuidv4 } = require('uuid');
+const sendEmail = require("../../services/sendEmail.service");
 
 const signUp = async (req, res, next) => {
     const { email, password } = req.body;
@@ -16,14 +18,23 @@ const signUp = async (req, res, next) => {
 
     const passwordHash = await createHash(password);
     const avatarURL = gravatar.url(email);
+    const verificationToken = uuidv4();
 
     const newUser = await UserModel.create({
         email,
         passwordHash,
         avatarURL,
+        verificationToken,
     }).catch((e) => {
-        throw createHttpException(409, "Thi email is already taken");
+        throw createHttpException(409, "This email is already taken");
     });
+    const verifyEmail = {
+        to: email,
+        subject: "Veryfy email",
+        html: `<a target="_blanc" href="http://localhost:3000/users/verify/${verificationToken}">Click verify email`,
+    };
+
+    await sendEmail(verifyEmail);
     const sessionKey = crypto.randomUUID();
     await UserModel.findByIdAndUpdate(newUser.id, { sessionKey });
 

@@ -14,8 +14,17 @@ const userSchema = Joi.object({
         .valid(...Object.values(USER_RULE)),
 });
 
+const emailSchema = Joi.object({
+    email: Joi.string()
+        .email({
+            minDomainSegments: 2,
+            tlds: { allow: ["com", "net", "ua"] },
+        })
+        .required(),
+});
 
 
 module.exports = {
     userSchema,
+    emailSchema,
 };
